@@ -81,6 +81,36 @@
 
   <script type="module" src="satellite-tracker.js"></script>
 
+    <script>
+    // Force the 2D map to center on the satellite when the page opens
+    window.addEventListener('load', () => {
+      const tracker = document.querySelector('satellite-tracker');
+      if (!tracker) return;
+
+      // Wait a brief second for the data to calculate in the background
+      setTimeout(() => {
+        if (tracker.shadowRoot) {
+          const text = tracker.shadowRoot.textContent || "";
+          const latMatch = text.match(/Latitude\s+([\d.-]+)°/);
+          const lngMatch = text.match(/Longitude\s+([\d.-]+)°/);
+
+          if (latMatch && lngMatch) {
+            // Grab the live numbers
+            const currentLat = latMatch[1];
+            const currentLng = lngMatch[1];
+
+            // Set them as the starting properties
+            tracker.setAttribute('latitude', currentLat);
+            tracker.setAttribute('longitude', currentLng);
+            
+            // Quickly toggle the view mode to force the map to redraw using the new coordinates
+            tracker.setAttribute('view', 'globe');
+            tracker.setAttribute('view', 'map');
+          }
+        }
+      }, 1200); 
+    });
+  </script>
   
 
 </body>
